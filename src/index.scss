@@ -13,7 +13,7 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-.bg {
+#bg {
     position: absolute;
     top: 0;
     left: 0;
@@ -36,7 +36,7 @@ body {
     color: coral;
 }
 
-.buttons {
+#buttons {
     margin: 20px 0;
     display: flex;
     gap: 30px;
@@ -50,25 +50,15 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
+        background-size: cover;
 
-        &.is-sun {
-            background: url('../public/assets/summer-bg.jpg') bottom center no-repeat;
-            background-size: cover;
-        }
+        span {
+            width: 25%;
+            height: 25%;
 
-        &.is-rain {
-            background: url('../public/assets/rainy-bg.jpg') bottom center no-repeat;
-            background-size: cover;
-        }
-
-        &.is-snow {
-            background: url('../public/assets/winter-bg.jpg') bottom center no-repeat;
-            background-size: cover;
-        }
-
-        svg {
-            width: 30%;
-            height: 30%;
+            &.playing {
+                background-image: url('../public/assets/icons/pause.svg') !important;
+            }
         }
     }
 }

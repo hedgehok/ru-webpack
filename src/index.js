@@ -3,53 +3,72 @@ import './index.scss';
 const bg = document.querySelector('#bg');
 const audio = document.querySelector('#audio');
 const volume = document.querySelector('#volume');
-const sun = document.querySelector('#sun');
-const rain = document.querySelector('#rain');
-const snow = document.querySelector('#snow');
-let isPlaying = false;
+const buttons = document.querySelector('#buttons');
 let current = undefined;
 
-const songList = {
-    'rain': {
-        'audio': '/assets/sounds/rain.mp3',
-        'image': '/assets/rainy-bg.jpg'
+const data = [
+    {
+        icon: './assets/icons/sun.svg',
+        image: './assets/summer-bg.jpg',
+        audio: './assets/sounds/summer.mp3'
     },
-    'sun': {
-        'audio': '/assets/sounds/summer.mp3',
-        'image': '/assets/summer-bg.jpg'
+    {
+        icon: './assets/icons/cloud-rain.svg',
+        image: './assets/rainy-bg.jpg',
+        audio: './assets/sounds/rain.mp3'
     },
-    'snow': {
-        'audio': '/assets/sounds/winter.mp3',
-        'image': '/assets/winter-bg.jpg'
+    {
+        icon: './assets/icons/cloud-snow.svg',
+        image: './assets/winter-bg.jpg',
+        audio: './assets/sounds/winter.mp3'
     }
-};
+];
 
-function play(type) {
-    if (type === current) {
-        if (isPlaying) {
-            isPlaying = false;
-            audio.pause();
-        } else {
-            isPlaying = true;
+function clearPlaying() {
+    document.querySelectorAll('.playing').forEach((item) => item.classList.remove('playing'));
+}
+
+function play(e, item) {
+    if (item.audio === current) {
+        if (audio.paused) {
             audio.play();
+            e.currentTarget.querySelector('span').classList.add('playing');
+        } else {
+            audio.pause();
+            e.currentTarget.querySelector('span').classList.remove('playing');
         }
     } else {
-        audio.pause();
-        current = type;
-        isPlaying = true;
-        audio.src = songList[type].audio;
+        current = item.audio;
+        audio.src = item.audio;
         audio.volume = volume.value;
         audio.play();
-        bg.style.background = `url('${songList[type].image}') bottom center no-repeat`;
+        bg.style.background = `url('${item.image}') bottom center no-repeat`;
+        clearPlaying();
+        e.currentTarget.querySelector('span').classList.add('playing');
     }
+}
+
+function getButton(item) {
+    const button = document.createElement('div');
+    button.className = 'button';
+    button.style.background = `url('${item.image}') bottom center no-repeat`;
+    button.appendChild(getButtonIcon(item.icon));
+    button.addEventListener('click', (e) => play(e, item));
+    return button;
+}
+
+function getButtonIcon(img) {
+    const icon = document.createElement('span');
+    icon.style.backgroundImage = `url('${img}')`;
+    icon.style.backgroundRepeat = `no-repeat`;
+    icon.style.backgroundSize = `contain`;
+    return icon;
 }
 
 volume.addEventListener('input', () => {
     if (audio) {
-        audio.volume = volume.value; // Устанавливаем громкость
+        audio.volume = volume.value;
     }
 });
 
-sun.addEventListener('click', () => play('sun'));
-rain.addEventListener('click', () => play('rain'));
-snow.addEventListener('click', () => play('snow'));
+data.forEach((item) => buttons.appendChild(getButton(item)));
